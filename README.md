@@ -34,13 +34,15 @@ L'API est sans état (**Zero-Data Retention**) : les réponses accompagnent chaq
 ## Architecture
 
 ```
-backend/    API Python FastAPI
+backend/    API Python FastAPI (sert aussi le frontend en production)
   app/diagnostic/questionnaire.py   Questions et logique conditionnelle (source unique du flux)
   app/diagnostic/engine.py          Classification, score et obligations
   app/diagnostic/obligations.py     Catalogue des obligations ↔ ISO/IEC 42001
   app/reports/pdf.py                Rapport PDF (ReportLab)
   app/api/diagnostic.py             Endpoints REST
-frontend/   Next.js 16, TypeScript, Tailwind CSS
+frontend/   Next.js 16, TypeScript, Tailwind CSS (export statique)
+Dockerfile  Image unique : build du frontend + API FastAPI
+render.yaml Déploiement Render (Blueprint)
 ```
 
 ### Endpoints
@@ -54,12 +56,20 @@ frontend/   Next.js 16, TypeScript, Tailwind CSS
 
 Documentation interactive : http://localhost:8000/docs
 
+## Déploiement sur Render
+
+Toutes les pages sont statiques : le frontend est exporté puis servi par FastAPI, ce qui donne **un seul service** (même origine, pas de CORS, aucune variable à configurer).
+
+1. Donner à Render l'accès au dépôt `ai-compliance` (GitHub → Settings → Applications → Render → Configure).
+2. Dans Render : **New → Blueprint**, choisir le dépôt et la branche ; Render lit `render.yaml`.
+3. Une fois le déploiement terminé, l'application est disponible sur `https://<nom-du-service>.onrender.com`.
+
 ## Démarrage
 
-Avec Docker :
+Avec Docker (même image qu'en production) :
 
 ```bash
-docker compose up --build
+docker compose up --build                     # http://localhost:8000
 ```
 
 En local :

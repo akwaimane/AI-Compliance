@@ -1,6 +1,7 @@
 // Typed client for the FastAPI backend (Diagnostic Flash endpoints).
 
-export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
+// Empty in production: the API is served from the same origin as the pages.
+export const API_URL = process.env.NEXT_PUBLIC_API_URL ?? "";
 
 export type AnswerValue = boolean | string | string[];
 export type Answers = Record<string, AnswerValue>;
